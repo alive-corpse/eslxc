@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+PREF="`pwd | sed 's#/bin##'`"
+
+. "$PREF/etc/main.conf"
+
+[ -z "$(brctl show | awk '$1~/^'"$br"'$/')" ] && brctl addbr "$br"
+ifconfig "$br" "$ip" netmask "$netmask" up
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o "$wan" -j MASQUERADE
+

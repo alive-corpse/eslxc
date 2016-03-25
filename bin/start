@@ -1,0 +1,6 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Usage: $0 <name>"
+lxc-start -n "$1" -d
+lxc-attach -n "$1"
+

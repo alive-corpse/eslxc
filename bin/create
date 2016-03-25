@@ -1,0 +1,19 @@
+#/bin/sh
+
+cd `dirname "$0"`
+PREF="`pwd | sed 's#/bin##'`"
+
+. "$PREF/etc/main.conf"
+
+[ -z "$1" ] && echo "Usage: $0 <name> <ip[/mask]>" && exit 0
+[ -d "$PREF/var/containers/$1" ] && echo "Container with name $1 is already exists" && exit 1
+
+TPL=`cat "$PREF/etc/default.conf"`
+
+echo "$TPL" | sed 's#%name%#'"$1"'#g;s#%path%#'"$PREF/var/containers/$1"'#g;s#%ip%#'"$2"'#g;s#%br%#'"$br"'#g;s#%gw%#'"$ip"'#g' > "$PREF/etc/containers/$1".conf
+mkdir "$PREF/var/containers/$1"
+cd "$PREF/var/containers/$1"
+tar xvzf "$PREF/var/templates/$template.tgz"
+cd "$PREF"
+lxc-create -n "$1" -f "$PREF/etc/containers/$1.conf"
+

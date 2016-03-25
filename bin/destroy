@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PREF=`dirname "$0"`
+PREF="$PREF/.."
+
+[ -z "$1" ] && echo "Usage: $0 <name>"
+lxc-destroy -n "$1" -f
+[ -f "$PREF/etc/$1.conf" ] && rm "$PREF/etc/$1.conf"
+
+

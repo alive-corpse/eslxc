@@ -1,0 +1,9 @@
+*.swp
+*.swo
+*.tml
+*.bk
+*_bk
+*.old
+etc/containers/*.conf
+var/containers/*
+var/templates/*

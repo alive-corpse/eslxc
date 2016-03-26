@@ -1,0 +1,3 @@
+[submodule "usr/lib/eslogger"]
+	path = usr/lib/eslogger
+	url = https://github.com/alive-corpse/eslogger

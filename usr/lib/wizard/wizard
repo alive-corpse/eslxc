@@ -1,0 +1,68 @@
+# Simple wizard
+swizy() {
+    # First parameter - message
+    # Second parameter - command
+    if [ -z "$AUTO" ]; then
+        ch="-"
+        while [ -z "$(echo "$ch" | sed 's/^$/n/' | egrep -i '^[yn]?$' )" ]; do
+            read -p "$1 [Y/n]: " ch
+            echo
+        done
+        [ -z "$ch" ] && ch='y'
+        case $ch in
+            Y|y)
+                $2
+            ;;
+            N|n)
+                echo "Canceled..."
+            ;;
+        esac
+    fi
+}
+swizn() {
+    # First parameter - message
+    # Second parameter - command
+    if [ -z "$AUTO" ]; then
+        ch="-"
+        while [ -z "$(echo "$ch" | sed 's/^$/n/' | egrep -i '^[yn]?$' )" ]; do
+            read -p "$1 [y/N]: " ch
+            echo
+        done
+        [ -z "$ch" ] && ch='n'
+        case $ch in
+            Y|y)
+                $2
+            ;;
+            N|n)
+                echo "Canceled..."
+            ;;
+        esac
+    fi
+}
+
+# Select
+# First option - list of settings, divided by space
+# Second option - message
+slct() {
+    if [ -n "$1" ]; then
+        [ -n "$2" ] && echo "$2"
+        lst=`echo "$1" | tr ' ' '\n' | awk '{ gsub(/_/," "); print NR" - "$0 }'`
+        echo "$lst"
+        while [ -z "$err" ]; do
+            res=''
+            read -p "Choose options by numbers, divided by space (еxample: 1 3 4): " ch
+            for c in $ch; do
+                tres=`echo "$lst" | grep '^'"$c"' - '`
+                [ -n "$tres" ] && res="$res $c" || err='1'
+            done
+            if [ -n "$err" ]; then
+                echo "Wrong choice, try again or press Ctrl+C to abort."
+                err=''
+            else
+                export SLCT="$res"
+                err='false'
+            fi
+        done
+    fi
+}
+

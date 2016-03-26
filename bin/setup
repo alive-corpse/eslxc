@@ -1,5 +1,8 @@
 #!/bin/sh
 
+apt-get install lxc lxctl
+
+
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"
 

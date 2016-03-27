@@ -1,7 +1,6 @@
 #!/bin/sh
 
-apt-get install lxc lxctl
-
+apt-get install lxc lxctl aufs-tools squashfs-tools
 
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"

@@ -1,5 +1,9 @@
 #/bin/sh
 
+# 1 - container name
+# 2 - ip/mask
+# 3 - layer
+
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"
 
@@ -7,13 +11,28 @@ PREF="`pwd | sed 's#/bin##'`"
 
 [ -z "$1" ] && echo "Usage: $0 <name> <ip[/mask]>" && exit 0
 [ -d "$PREF/var/containers/$1" ] && echo "Container with name $1 is already exists" && exit 1
+[ -n "$3" ] && template="$3"
 
-TPL=`cat "$PREF/etc/default.conf"`
+NET=`cat "$PREF/etc/networking.conf" | sed 's#%ip%#'"$2"'#g;s#%br%#'"$br"'#g;s#%gw%#'"$ip"'#g'`
+[ -f "$PREF/etc/templates/$template.conf" ] && TPL=`cat "$PREF/etc/templates/$template.conf"` || TPL=`cat "$PREF/etc/default.conf"`
+TPL="$(echo "$TPL" |  sed 's#%name%#'"$1"'#g;s#%path%#'"$PREF/var/containers/$1"'#g')"
+echo "$TPL" | sed '/%networking%/,$d' | sed '$d' > "$PREF/etc/containers/$1".conf
+echo "$NET" >> "$PREF/etc/containers/$1".conf
+echo "$TPL" | sed '1,/%networking%/d' >> "$PREF/etc/containers/$1".conf
+mkdir -p "$PREF/var/containers/$1"
+mkdir -p "$PREF/mnt/containers/$1"
 
-echo "$TPL" | sed 's#%name%#'"$1"'#g;s#%path%#'"$PREF/var/containers/$1"'#g;s#%ip%#'"$2"'#g;s#%br%#'"$br"'#g;s#%gw%#'"$ip"'#g' > "$PREF/etc/containers/$1".conf
-mkdir "$PREF/var/containers/$1"
 cd "$PREF/var/containers/$1"
 tar xvzf "$PREF/var/templates/$template.tgz"
 cd "$PREF"
+
+#if [ -f "$PREF/var/layers/$3.squashfs" ]; then
+    #[ -d "$PREF/mnt/common/$3" ] || mkdir "$PREF/mnt/common/$3"
+    #if [ -z "$(mount | grep '^'"$PREF/var/layers/$3.squashfs ")" ]; then
+        #mount -t squashfs "$PREF/var/layers/$3.squashfs" "$PREF/mnt/common/$3"
+    #fi
+    #mount -t aufs -o br="$PREF/mnt/common/$3:$PREF/var/containers/$1" none "$PREF/mnt/containers/$1"
+#fi
+
 lxc-create -n "$1" -f "$PREF/etc/containers/$1.conf"
 

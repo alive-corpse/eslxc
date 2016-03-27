@@ -1,0 +1,21 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+PREF="`pwd | sed 's#/bin##'`"
+
+[ -z "$(dpkg -l | awk '$2~/^debootstrap$/' )" ] && apt-get install debootstrap
+
+mkdir -p "$PREF/var/layers/$1"
+
+debootstrap --variant=minbase "$1" "$PREF/var/layers/$1"
+cd "$PREF/var/layers/$1"
+if [ "$1" == "jessie" ]; then
+    cp `which ping` "$PREF/var/layers/$1/bin"
+    cp `which ping6` "$PREF/var/layers/$1/bin"
+    cp `which ifconfig` "$PREF/var/layers/$1/sbin"
+    echo "nameserver 8.8.8.8" > "$PREF/var/layers/$1/etc/resolv.conf"
+fi
+tar cvzf "$PREF/var/templates/$1.tgz" *
+#mksquashfs "$PREF/tmp/$1" "$PREF/layers/$1.squashfs"
+#debootstrap --variant=minbase --unpack-tarball="$PREF/tmp/$1.tar" $1 "$PREF/layers/$1"
+

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+PREF="`pwd | sed 's#/bin##'`"
+
+[ -z "$(dpkg -l | awk '$2~/^debootstrap$/' )" ] && apt-get install debootstrap
+
+mkdir -p "$PREF/var/layers/$1"
+
+debootstrap --variant=minbase "$1" "$PREF/var/layers/$1"
+#mksquashfs "$PREF/tmp/$1" "$PREF/layers/$1.squashfs"
+#debootstrap --variant=minbase --unpack-tarball="$PREF/tmp/$1.tar" $1 "$PREF/layers/$1"
+

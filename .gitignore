@@ -7,3 +7,5 @@
 etc/containers/*.conf
 var/containers/*
 var/templates/*
+var/layers/*
+tmp

@@ -5,6 +5,6 @@ PREF="`pwd | sed 's#/bin##'`"
 
 [ -z "$1" ] && echo "Usage: $0 <name>"
 lxc-destroy -n "$1" -f
-[ -f "$PREF/etc/$1.conf" ] && rm "$PREF/etc/$1.conf"
+[ -f "$PREF/etc/containers/$1.conf" ] && rm "$PREF/etc/containers/$1.conf"
 
 

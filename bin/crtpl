@@ -2,7 +2,7 @@
 
 # 1 - container name
 # 2 - ip/mask
-# 3 - layer
+# 3 - template
 
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"

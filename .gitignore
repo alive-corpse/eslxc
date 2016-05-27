@@ -8,4 +8,6 @@ etc/containers/*.conf
 var/containers/*
 var/templates/*
 var/layers/*
+mnt/containers/*
+mnt/common/*
 tmp

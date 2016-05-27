@@ -28,10 +28,10 @@ mkdir -p "$PREF/mnt/containers/$1"
 
 if [ -f "$PREF/var/layers/$3.squashfs" ]; then
     [ -d "$PREF/mnt/common/$3" ] || mkdir "$PREF/mnt/common/$3"
-#    if [ -z "$(mount | grep '^'"$PREF/var/layers/$3.squashfs ")" ]; then
-#        mount -t squashfs "$PREF/var/layers/$3.squashfs" "$PREF/mnt/common/$3"
-#    fi        
-    unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty "$PREF/mnt/common/$3=RW:$PREF/var/containers/$1=RW" "$PREF/mnt/containers/$1"
+    if [ -z "$(mount | grep '^'"$PREF/var/layers/$3.squashfs ")" ]; then
+        mount -t squashfs "$PREF/var/layers/$3.squashfs" "$PREF/mnt/common/$3"
+    fi        
+    unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty "$PREF/var/containers/$1=RW:$PREF/mnt/common/$3=RO" "$PREF/mnt/containers/$1"
 fi
 
 lxc-create -n "$1" -f "$PREF/etc/containers/$1.conf"

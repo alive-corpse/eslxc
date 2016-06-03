@@ -11,3 +11,4 @@ var/layers/*
 mnt/containers/*
 mnt/common/*
 tmp
+etc/main.conf

@@ -1,9 +1,12 @@
 #!/bin/sh
 
-apt-get install lxc lxctl unionfs-fuse squashfs-tools
 
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"
+
+! [ -f "$PREF/etc/main.conf" ] && echo "File etc/main.conf is not exists. Copy it from etc/main.conf_dist and change if it's necessary" && exit 1
+
+apt-get install lxc lxctl unionfs-fuse squashfs-tools
 
 . "$PREF/etc/main.conf"
 

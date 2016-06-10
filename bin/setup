@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 cd `dirname "$0"`
 PREF="`pwd | sed 's#/bin##'`"
 
@@ -9,6 +8,18 @@ PREF="`pwd | sed 's#/bin##'`"
 apt-get install lxc lxctl unionfs-fuse squashfs-tools
 
 . "$PREF/etc/main.conf"
+
+# Mount all base images
+for mpoint in `find "$PREF/mnt/common" -maxdepth 1 -mindepth 1 -type d`; do
+    if [ -f "$PREF/var/layers/`basename "$mpoint"`.squashfs" ]; then
+        if [ -z "$(mount | awk '$3~/'"$(echo "$mpoint" | sed "s#/#\\\/#g")"'/ { print "Something is already mounted on mountpoint '"$mpoint"'"}')" ]; then
+            mount "$PREF/var/layers/`basename "$mpoint"`.squashfs"  "$mpoint"
+        fi
+    else
+        echo "Warning: cannot find base image $PREF/var/layers/`basename "$mpoint"`.squashfs to mount" 
+
+    fi
+done
 
 [ -z "$(brctl show | awk '$1~/^'"$br"'$/')" ] && brctl addbr "$br"
 ifconfig "$br" "$ip" netmask "$netmask" up

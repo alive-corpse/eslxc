@@ -31,7 +31,9 @@ if [ -f "$PREF/var/layers/$3.squashfs" ]; then
     if [ -z "$(mount | grep '^'"$PREF/var/layers/$3.squashfs ")" ]; then
         mount -t squashfs "$PREF/var/layers/$3.squashfs" "$PREF/mnt/common/$3"
     fi        
-    unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty "$PREF/var/containers/$1=RW:$PREF/mnt/common/$3=RO" "$PREF/mnt/containers/$1"
+    if unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty "$PREF/var/containers/$1=RW:$PREF/mnt/common/$3=RO" "$PREF/mnt/containers/$1"; then
+        echo "unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty \"$PREF/var/containers/$1=RW:$PREF/mnt/common/$3=RO\" \"$PREF/mnt/containers/$1\"" > "$PREF/etc/containers/$1_mountcmd"
+    fi
 fi
 
 lxc-create -n "$1" -f "$PREF/etc/containers/$1.conf"

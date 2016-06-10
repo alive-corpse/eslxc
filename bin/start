@@ -1,6 +1,12 @@
 #!/bin/sh
 
 [ -z "$1" ] && echo "Usage: $0 <name>"
+
+[ -f "$PREF/etc/containers/$1_mountcmd" ] && cat "$PREF/etc/containers/$1_mountcmd" | sh
+
+#root@live [20:19:58]:/opt/eslxc# mount -t squashfs var/layers/xenial.squashfs mnt/common/xenial
+#root@live [20:20:15]:/opt/eslxc# unionfs-fuse -o cow,nodev,noatime,allow_other,use_ino,suid,dev,nonempty var/containers/test01=RW:mnt/common/xenial=RO mnt/containers/test01
+
 lxc-start -n "$1" -d
 lxc-attach -n "$1"
 

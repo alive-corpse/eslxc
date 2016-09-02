@@ -5,6 +5,7 @@
 *_bk
 *.old
 etc/containers/*.conf
+etc/containers/*_mountcmd
 var/containers/*
 var/templates/*
 var/layers/*

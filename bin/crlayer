@@ -15,7 +15,7 @@ PREF="`pwd | sed 's#/bin##'`"
 
 NET=`cat "$PREF/etc/networking.conf" | sed 's#%ip%#'"$2"'#g;s#%br%#'"$br"'#g;s#%gw%#'"$ip"'#g'`
 [ -f "$PREF/etc/layers/$layer.conf" ] && TPL=`cat "$PREF/etc/layers/$layer.conf"` || TPL=`cat "$PREF/etc/default.conf"`
-TPL="$(echo "$TPL" |  sed 's#%name%#'"$1"'#g;s#%path%#'"$PREF/mnt/containers/$1"'#g')"
+TPL="$(echo "$TPL" |  sed 's#%name%#'"$1"'#g;s#%path%#'"$PREF/mnt/containers/$1"'#g;s#%hostname%#'"$1"'#g')"
 echo "$TPL" | sed '/%networking%/,$d' | sed '$d' > "$PREF/etc/containers/$1".conf
 echo "$NET" >> "$PREF/etc/containers/$1".conf
 echo "$TPL" | sed '1,/%networking%/d' >> "$PREF/etc/containers/$1".conf

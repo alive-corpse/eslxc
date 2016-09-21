@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd `dirname "$0"`
+PREF="`pwd | sed 's#/bin##'`"
+
+[ -z "$1" ] && echo "Empty parameter" && exit 1
+[ -d "$PREF/var/backups" ] || mkdir -p "$PREF/var/backups"
+CT="$PREF/mnt/containers/$1"
+! [ -d "$CT" ] && echo "Container with name $1 is not exists" && exit 2
+
+cd "$CT"
+tar czf "$PREF/var/backups/$1-$(date '+%F_%T' | sed 's/:/\./g').tgz" --exclude=dev/* --exclude=tmp/* *
+
